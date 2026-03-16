@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANSFORMATION">
+<meta name="theme-color" content="#050505">
+<title>98→70 KG PROTOCOL</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #050505; color: #fff; height: 100%; overflow: hidden; }
+  #root { height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+  .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 90px; }
+  ::-webkit-scrollbar { display: none; }
+  .bb { font-family: 'Bebas Neue', Impact, sans-serif; }
+  .inter { font-family: 'Inter', sans-serif; }
+  button { font-family: 'Bebas Neue', Impact, sans-serif; cursor: pointer; }
+
+  .header {
+    background: linear-gradient(180deg, #0f0000 0%, #050505 100%);
+    padding: 48px 18px 14px;
+    border-bottom: 1px solid #1a1a1a;
+    flex-shrink: 0;
+  }
+  .nav { display: flex; background: #0a0a0a; border-bottom: 1px solid #1a1a1a; flex-shrink: 0; }
+  .nav-btn {
+    flex: 1; padding: 13px 0; background: transparent; border: none;
+    border-bottom: 2px solid transparent; color: #555; font-size: 11px;
+    letter-spacing: 2px; cursor: pointer; transition: all 0.2s;
+  }
+  .nav-btn.active { color: #ef4444; border-bottom-color: #ef4444; }
+
+  .card { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+  .card-red { background: linear-gradient(135deg, #0f0f0f, #1a0a0a); border-color: #ef444330; }
+  .card-green { background: linear-gradient(135deg, #0a0f0a, #0a1a0a); border-color: #22c55e30; }
+  .label { color: #555; font-size: 10px; letter-spacing: 3px; margin-bottom: 8px; font-family: 'Bebas Neue', Impact, sans-serif; }
+
+  /* Task card */
+  .task-card {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    border-radius: 14px;
+    padding: 14px 14px 12px;
+    margin-bottom: 8px;
+    transition: border-color 0.2s;
+  }
+  .task-card.full { border-color: #22c55e40; background: #0a140a; }
+  .task-card.partial { border-color: #f59e0b30; background: #0f0e08; }
+
+  .task-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+  /* Slider */
+  .slider-wrap { position: relative; padding: 4px 0 2px; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px; background: transparent; cursor: pointer; outline: none;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 3px; background: #1e1e1e;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #fff; border: 2px solid #333;
+    margin-top: -8px; transition: background 0.2s, border-color 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+
+  /* Number input for steps */
+  .steps-input {
+    background: #1a1a1a; border: 1px solid #2a2a2a;
+    border-radius: 8px; color: #fff;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 20px; text-align: center;
+    width: 100%; padding: 8px 12px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .steps-input:focus { border-color: #f59e0b; }
+
+  .penalty-box {
+    background: linear-gradient(135deg, #1a0505, #0f0000);
+    border: 2px solid #ef444455;
+    border-radius: 14px; padding: 16px 18px; margin-top: 10px;
+    animation: pulse-red 2s infinite;
+  }
+  @keyframes pulse-red {
+    0%,100% { border-color: #ef444455; }
+    50% { border-color: #ef4444aa; }
+  }
+
+  .perfect-box {
+    background: linear-gradient(135deg, #0a1a0a, #051a05);
+    border: 2px solid #22c55e60;
+    border-radius: 14px; padding: 16px 18px; margin-top: 10px;
+    text-align: center;
+  }
+
+  .milestone-banner {
+    display: flex; align-items: center; gap: 10px;
+    margin: 10px 0 6px; padding: 10px 14px;
+    background: #1a1500; border: 1px solid #f59e0b40; border-radius: 10px;
+  }
+
+  .bottom-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #050505; border-top: 1px solid #1a1a1a;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    display: flex; gap: 8px; z-index: 200;
+  }
+
+  .day-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; margin-bottom: 4px;
+    background: #0a0a0a; border: 1px solid #111;
+    border-radius: 10px; cursor: pointer; transition: all 0.15s;
+  }
+  .day-row.today { background: #1a0e00; border-color: #f59e0b40; }
+  .progress-ring { transform: rotate(-90deg); transform-origin: 16px 16px; }
+
+  .session-badge {
+    border-radius: 12px; padding: 12px 14px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
+
+const START_DATE = new Date("2026-03-16T00:00:00");
+const FAT_PER_KCAL = 1000 / 7700;
+
+const WEIGHTS = [
+  98,97.6,97.3,96.9,96.6,96.2,95.9,95.5,95.1,94.8,94.4,94.1,93.7,93.4,
+  93.0,92.6,92.3,91.9,91.6,91.2,90.9,90.5,90.2,89.8,89.5,89.1,88.8,88.4,
+  88.1,87.7,87.4,87.0,86.7,86.3,86.0,
+  85.8,85.7,85.6,85.5,
+  85.5,85.2,84.8,84.5,84.1,83.8,83.4,83.1,82.7,82.4,82.0,81.7,81.3,81.0,
+  80.6,80.3,79.9,79.6,79.2,78.9,78.5,78.2,77.8,77.5,77.1,76.8,76.4,76.1,
+  75.7,75.4,75.0,74.7,74.3,74.0,
+  74.0,73.9,73.8,73.7,
+  73.7,73.3,73.0,72.6,72.3,71.9,71.6,71.2,70.9,70.5,70.2,69.8,69.5,69.1,
+  68.8,68.4,68.1,67.7,67.4,67.0,66.7,66.3,66.0,65.6,65.3,64.9,64.6,64.2,
+  63.9,63.5,63.2,62.8,62.5,62.1,61.8,
+  61.8,61.7,61.6,61.5
+];
+
+function getPhase(d) {
+  if (d < 35) return { cycle: 1, phase: "PSMF", cd: d+1, total: 35 };
+  if (d < 39) return { cycle: 1, phase: "REFEED", cd: d-34, total: 4 };
+  if (d < 74) return { cycle: 2, phase: "PSMF", cd: d-38, total: 35 };
+  if (d < 78) return { cycle: 2, phase: "REFEED", cd: d-73, total: 4 };
+  if (d < 113) return { cycle: 3, phase: "PSMF", cd: d-77, total: 35 };
+  if (d < 117) return { cycle: 3, phase: "REFEED", cd: d-112, total: 4 };
+  return null;
+}
+function addDays(date, n) { const d = new Date(date); d.setDate(d.getDate()+n); return d; }
+function fmtDate(date) { return date.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"}); }
+function getBF(d) { return Math.max(14, 32-(d/116)*18); }
+
+const DOW_SESSIONS = {
+  1:{label:"PUSH",muscles:"Pecto · Épaules · Triceps",color:"#ef4444"},
+  2:{label:"PULL",muscles:"Dos · Biceps · Arrière épaules",color:"#3b82f6"},
+  4:{label:"LEGS",muscles:"Quadri · Fessiers · Ischio · Mollets",color:"#8b5cf6"},
+  5:{label:"FULL BODY",muscles:"Tous groupes — circuit rappel",color:"#f59e0b"},
+};
+
+// TASK DEFINITIONS — each has a type and target
+// type: "steps" (number input), "slider" (0-target), "boolean" (checkbox style but 0/1)
+// kcalPerUnit: kcal per unit (for steps: per step, for time: per minute, for boolean: flat)
+const getPSMFTasks = (isMusc) => [
+  { id:"steps",    icon:"👟", label:"Steps",           type:"steps",   target:15000, unit:"steps", kcalFull:525 },
+  { id:"incline",  icon:"⛰️", label:"Marche inclinée", type:"slider",  target:45,    unit:"min",   kcalFull:400 },
+  { id:"nutrition",icon:"🥩", label:"Nutrition 600kcal",type:"slider", target:100,   unit:"%",     kcalFull:1835, note:"% de respect du protocole" },
+  { id:"water",    icon:"💧", label:"Eau",              type:"slider",  target:4,     unit:"L",     kcalFull:0 },
+  { id:"supps",    icon:"💊", label:"Suppléments",      type:"boolean", target:1,     unit:"",      kcalFull:0 },
+  ...(isMusc ? [{ id:"musculation", icon:"🏋️", label:"Séance muscu", type:"slider", target:100, unit:"%", kcalFull:480, note:"% de la séance effectuée" }] : []),
+];
+const getRefeedTasks = (isMusc) => [
+  { id:"steps",    icon:"👟", label:"Steps",            type:"steps",  target:15000, unit:"steps", kcalFull:525 },
+  { id:"incline",  icon:"⛰️", label:"Marche inclinée",  type:"slider", target:20,    unit:"min",   kcalFull:180 },
+  { id:"nutrition",icon:"🍚", label:"Refeed 2200kcal",  type:"slider", target:100,   unit:"%",     kcalFull:0,   note:"% du refeed respecté" },
+  { id:"water",    icon:"💧", label:"Eau",               type:"slider", target:4,     unit:"L",     kcalFull:0 },
+  { id:"supps",    icon:"💊", label:"Suppléments",       type:"boolean",target:1,     unit:"",      kcalFull:0 },
+  ...(isMusc ? [{ id:"musculation", icon:"🏋️", label:"Séance muscu", type:"slider", target:100, unit:"%", kcalFull:600, note:"% de la séance effectuée" }] : []),
+];
+
+function getDayTasks(dayIdx) {
+  const phase = getPhase(dayIdx);
+  const date = addDays(START_DATE, dayIdx);
+  const dow = date.getDay();
+  const isMusc = [1,2,4,5].includes(dow);
+  return phase?.phase === "PSMF" ? getPSMFTasks(isMusc) : getRefeedTasks(isMusc);
+}
+
+const MILESTONES = [
+  {d:0,  label:"DÉBUT — JOUR J",      w:98,   bf:32,   icon:"🚀"},
+  {d:13, label:"−5 KG",               w:93,   bf:30,   icon:"⚡"},
+  {d:34, label:"FIN PSMF CYCLE 1",    w:86,   bf:27,   icon:"🔥"},
+  {d:38, label:"FIN REFEED C1",       w:85.5, bf:26.5, icon:"💧"},
+  {d:55, label:"−20 KG TOTAL",        w:78,   bf:22,   icon:"💪"},
+  {d:73, label:"FIN PSMF CYCLE 2",    w:74,   bf:19,   icon:"🔥"},
+  {d:77, label:"FIN REFEED C2",       w:73.7, bf:18.5, icon:"💧"},
+  {d:95, label:"SOUS 70 KG",          w:69,   bf:16,   icon:"🎯"},
+  {d:112,label:"FIN PSMF CYCLE 3",    w:62,   bf:14.5, icon:"🔥"},
+  {d:116,label:"🏆 OBJECTIF ATTEINT", w:61.5, bf:14,   icon:"🏆"},
+];
+
+// Progress value: 0 to 1
+function getTaskProgress(task, val) {
+  if (val === undefined || val === null) return 0;
+  if (task.type === "boolean") return val >= 1 ? 1 : 0;
+  if (task.type === "steps") return Math.min(1, val / task.target);
+  if (task.type === "slider") return Math.min(1, val / task.target);
+  return 0;
+}
+
+function getTaskColor(progress) {
+  if (progress >= 1) return "#22c55e";
+  if (progress >= 0.7) return "#84cc16";
+  if (progress >= 0.4) return "#f59e0b";
+  if (progress > 0) return "#f97316";
+  return "#ef4444";
+}
+
+function App() {
+  const [values, setValues] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("ft_v4") || "{}"); } catch { return {}; }
+  });
+  const [view, setView] = useState("today");
+  const [expandedDay, setExpandedDay] = useState(null);
+
+  const todayIdx = Math.max(0, Math.min(116, Math.floor((new Date() - START_DATE) / 86400000)));
+
+  useEffect(() => {
+    try { localStorage.setItem("ft_v4", JSON.stringify(values)); } catch {}
+  }, [values]);
+
+  const setValue = useCallback((dayIdx, taskId, val) => {
+    const k = `${dayIdx}_${taskId}`;
+    setValues(prev => ({ ...prev, [k]: val }));
+  }, []);
+
+  const getValue = (dayIdx, taskId) => values[`${dayIdx}_${taskId}`];
+
+  // Returns kcal NOT burned (0 = perfect)
+  const getUncheckedKcal = (dayIdx) => {
+    return getDayTasks(dayIdx).reduce((sum, task) => {
+      const val = getValue(dayIdx, task.id);
+      const progress = getTaskProgress(task, val);
+      const missed = 1 - progress;
+      return sum + missed * (task.kcalFull || 0);
+    }, 0);
+  };
+
+  // Completion 0-100
+  const getCompletion = (dayIdx) => {
+    const tasks = getDayTasks(dayIdx);
+    const totalProgress = tasks.reduce((sum, task) => {
+      const val = getValue(dayIdx, task.id);
+      return sum + getTaskProgress(task, val);
+    }, 0);
+    return Math.round((totalProgress / tasks.length) * 100);
+  };
+
+  // ---- TASK INPUT COMPONENT ----
+  function TaskInput({ task, dayIdx }) {
+    const val = getValue(dayIdx, task.id) ?? 0;
+    const progress = getTaskProgress(task, val);
+    const color = getTaskColor(progress);
+    const missedKcal = (1 - progress) * (task.kcalFull || 0);
+    const missedFatG = Math.round(missedKcal * FAT_PER_KCAL);
+    const isComplete = progress >= 1;
+    const hasCalories = task.kcalFull > 0;
+
+    const cardClass = `task-card ${isComplete ? 'full' : progress > 0 ? 'partial' : ''}`;
+
+    return (
+      <div className={cardClass}>
+        {/* Header row */}
+        <div className="task-header">
+          <span style={{ fontSize: 22 }}>{task.icon}</span>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ color: color, fontSize: 14, letterSpacing: 1, fontFamily: "'Bebas Neue', Impact, sans-serif" }}>
+                {task.label}
+              </span>
+              <span style={{ color: color, fontSize: 16, fontFamily: "'Bebas Neue', Impact, sans-serif", minWidth: 80, textAlign: 'right' }}>
+                {task.type === "steps"
+                  ? `${(val||0).toLocaleString()} / ${task.target.toLocaleString()}`
+                  : task.type === "boolean"
+                    ? (val >= 1 ? "✓ FAIT" : "—")
+                    : `${val||0} / ${task.target} ${task.unit}`
+                }
+              </span>
+            </div>
+            {task.note && (
+              <div style={{ color: '#444', fontSize: 9, fontFamily: 'Inter, sans-serif', marginTop: 1 }}>{task.note}</div>
+            )}
+          </div>
+        </div>
+
+        {/* Progress bar (visual) */}
+        {task.type !== "boolean" && (
+          <div style={{ background: '#1a1a1a', borderRadius: 3, height: 4, marginBottom: 10, overflow: 'hidden' }}>
+            <div style={{
+              width: `${Math.min(100, progress * 100)}%`, height: '100%',
+              background: `linear-gradient(90deg, ${color}88, ${color})`,
+              borderRadius: 3, transition: 'width 0.2s, background 0.3s'
+            }} />
+          </div>
+        )}
+
+        {/* Input */}
+        {task.type === "steps" && (
+          <div>
+            <input
+              type="number" inputMode="numeric" pattern="[0-9]*"
+              className="steps-input"
+              placeholder="0"
+              value={val || ""}
+              min={0} max={25000}
+              onChange={e => setValue(dayIdx, task.id, Math.max(0, parseInt(e.target.value)||0))}
+              style={{ borderColor: val > 0 ? `${color}60` : '#2a2a2a', color: color }}
+            />
+            {/* Quick buttons */}
+            <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+              {[5000, 8000, 10000, 12000, 15000].map(n => (
+                <button key={n} onClick={() => setValue(dayIdx, task.id, n)} style={{
+                  flex: 1, padding: '6px 0', background: val === n ? `${color}30` : '#1a1a1a',
+                  border: `1px solid ${val === n ? color : '#2a2a2a'}`, borderRadius: 6,
+                  color: val === n ? color : '#555', fontSize: 9, letterSpacing: 1,
+                  fontFamily: 'Inter, sans-serif', cursor: 'pointer'
+                }}>{(n/1000).toFixed(0)}k</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {task.type === "slider" && (
+          <div>
+            <div style={{ position: 'relative' }}>
+              {/* Track fill overlay */}
+              <div style={{
+                position: 'absolute', top: '50%', left: 0,
+                width: `${Math.min(100, progress * 100)}%`,
+                height: 6, background: `linear-gradient(90deg, ${color}60, ${color}90)`,
+                borderRadius: 3, transform: 'translateY(-50%)',
+                pointerEvents: 'none', zIndex: 1,
+                transition: 'width 0.1s'
+              }} />
+              <input type="range"
+                min={0} max={task.target} step={task.id === "water" ? 0.5 : task.id === "nutrition" || task.id === "musculation" ? 5 : 5}
+                value={val || 0}
+                onChange={e => setValue(dayIdx, task.id, parseFloat(e.target.value))}
+                style={{ position: 'relative', zIndex: 2 }}
+              />
+            </div>
+            {/* Quick marks */}
+            {task.id === "water" && (
+              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                {[1,2,3,4].map(n => (
+                  <button key={n} onClick={() => setValue(dayIdx, task.id, n)} style={{
+                    flex: 1, padding: '5px 0', background: val >= n ? `${color}25` : '#1a1a1a',
+                    border: `1px solid ${val >= n ? color : '#2a2a2a'}`, borderRadius: 6,
+                    color: val >= n ? color : '#555', fontSize: 11,
+                    fontFamily: "'Bebas Neue', Impact, sans-serif", cursor: 'pointer'
+                  }}>{n}L</button>
+                ))}
+              </div>
+            )}
+            {(task.id === "nutrition" || task.id === "musculation") && (
+              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                {[25,50,75,100].map(n => (
+                  <button key={n} onClick={() => setValue(dayIdx, task.id, n)} style={{
+                    flex: 1, padding: '5px 0', background: val >= n ? `${color}25` : '#1a1a1a',
+                    border: `1px solid ${val >= n ? color : '#2a2a2a'}`, borderRadius: 6,
+                    color: val >= n ? color : '#555', fontSize: 11,
+                    fontFamily: "'Bebas Neue', Impact, sans-serif", cursor: 'pointer'
+                  }}>{n}%</button>
+                ))}
+              </div>
+            )}
+            {task.id === "incline" && (
+              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                {[task.target === 45 ? [15,20,30,45] : [10,15,20]][0].map(n => (
+                  <button key={n} onClick={() => setValue(dayIdx, task.id, n)} style={{
+                    flex: 1, padding: '5px 0', background: val >= n ? `${color}25` : '#1a1a1a',
+                    border: `1px solid ${val >= n ? color : '#2a2a2a'}`, borderRadius: 6,
+                    color: val >= n ? color : '#555', fontSize: 11,
+                    fontFamily: "'Bebas Neue', Impact, sans-serif", cursor: 'pointer'
+                  }}>{n}m</button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {task.type === "boolean" && (
+          <button
+            onClick={() => setValue(dayIdx, task.id, val >= 1 ? 0 : 1)}
+            style={{
+              width: '100%', padding: '10px', borderRadius: 10,
+              background: val >= 1 ? '#22c55e20' : '#1a1a1a',
+              border: `1px solid ${val >= 1 ? '#22c55e50' : '#2a2a2a'}`,
+              color: val >= 1 ? '#22c55e' : '#666',
+              fontSize: 13, letterSpacing: 2, cursor: 'pointer', transition: 'all 0.2s'
+            }}
+          >{val >= 1 ? '✓ PRIS' : 'MARQUER COMME PRIS'}</button>
+        )}
+
+        {/* Penalty or reward */}
+        {hasCalories && (
+          <div style={{
+            marginTop: 10, padding: '8px 12px', borderRadius: 8,
+            background: isComplete ? '#22c55e10' : '#ef444410',
+            border: `1px solid ${isComplete ? '#22c55e25' : '#ef444425'}`,
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+          }}>
+            {isComplete ? (
+              <>
+                <span style={{ color: '#22c55e80', fontSize: 10, fontFamily: 'Inter, sans-serif' }}>Brûlé</span>
+                <span style={{ color: '#22c55e', fontSize: 13, fontFamily: "'Bebas Neue', Impact, sans-serif" }}>
+                  +{Math.round(task.kcalFull * FAT_PER_KCAL)}g gras éliminé ✓
+                </span>
+              </>
+            ) : (
+              <>
+                <span style={{ color: '#ef444470', fontSize: 10, fontFamily: 'Inter, sans-serif' }}>Non brûlé</span>
+                <span style={{ color: '#ef4444', fontSize: 13, fontFamily: "'Bebas Neue', Impact, sans-serif" }}>
+                  +{missedFatG}g gras conservé
+                </span>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function DayView({ dayIdx }) {
+    const date = addDays(START_DATE, dayIdx);
+    const phase = getPhase(dayIdx);
+    const dow = date.getDay();
+    const session = DOW_SESSIONS[dow];
+    const isPSMF = phase?.phase === "PSMF";
+    const weight = WEIGHTS[Math.min(dayIdx, WEIGHTS.length-1)];
+    const bf = getBF(dayIdx).toFixed(1);
+    const tasks = getDayTasks(dayIdx);
+    const uncheckedKcal = getUncheckedKcal(dayIdx);
+    const fatG = Math.round(uncheckedKcal * FAT_PER_KCAL);
+    const completion = getCompletion(dayIdx);
+    const milestone = MILESTONES.find(m => m.d === dayIdx);
+    const isToday = dayIdx === todayIdx;
+
+    // Earned fat burn
+    const earnedKcal = tasks.reduce((sum, task) => {
+      const val = getValue(dayIdx, task.id);
+      return sum + getTaskProgress(task, val) * (task.kcalFull || 0);
+    }, 0);
+    const earnedFatG = Math.round(earnedKcal * FAT_PER_KCAL);
+
+    return (
+      <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif" }}>
+        {/* Phase header */}
+        <div className={`card ${isPSMF ? 'card-red' : 'card-green'}`} style={{ marginBottom: 10 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+            <div>
+              <div style={{ color:'#555', fontSize:10, letterSpacing:3, marginBottom:6 }}>
+                JOUR {dayIdx+1} · {fmtDate(date).toUpperCase()}
+                {isToday && <span style={{ marginLeft:8, background:'#f59e0b', color:'#000', fontSize:8, padding:'2px 6px', borderRadius:3 }}>AUJOURD'HUI</span>}
+              </div>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <span style={{ background: isPSMF?'#ef4444':'#22c55e', color:'white', padding:'3px 12px', borderRadius:5, fontSize:13, letterSpacing:2 }}>
+                  CYCLE {phase?.cycle} · {phase?.phase}
+                </span>
+                <span style={{ color:'#666', fontSize:11 }}>J{phase?.cd}/{phase?.total}</span>
+              </div>
+            </div>
+            <div style={{ textAlign:'right' }}>
+              <div style={{ fontSize:30, lineHeight:1, color:'#fff' }}>{weight.toFixed(1)}<span style={{ fontSize:13, color:'#555' }}> kg</span></div>
+              <div style={{ color:'#f59e0b', fontSize:13, marginTop:2 }}>{bf}% BF</div>
+            </div>
+          </div>
+          {/* Progress bar */}
+          <div style={{ marginTop:12 }}>
+            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
+              <span style={{ color:'#555', fontSize:10, letterSpacing:2 }}>COMPLÉTION</span>
+              <span style={{ color: completion >= 100 ? '#22c55e' : completion >= 70 ? '#84cc16' : completion >= 40 ? '#f59e0b' : '#ef4444', fontSize:12 }}>
+                {completion}%
+              </span>
+            </div>
+            <div style={{ background:'#1a1a1a', borderRadius:4, height:5, overflow:'hidden' }}>
+              <div style={{
+                width:`${completion}%`, height:'100%', borderRadius:4,
+                background: completion >= 100 ? 'linear-gradient(90deg,#22c55e,#4ade80)'
+                  : completion >= 70 ? 'linear-gradient(90deg,#84cc16,#a3e635)'
+                  : 'linear-gradient(90deg,#ef4444,#f97316)',
+                transition:'width 0.3s'
+              }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Milestone */}
+        {milestone && (
+          <div className="milestone-banner" style={{ marginBottom:10 }}>
+            <span style={{ fontSize:22 }}>{milestone.icon}</span>
+            <div>
+              <div style={{ color:'#f59e0b', fontSize:15, letterSpacing:2 }}>{milestone.label}</div>
+              <div style={{ color:'#888', fontSize:10, fontFamily:'Inter,sans-serif' }}>{milestone.w} kg · {milestone.bf}% bodyfat</div>
+            </div>
+          </div>
+        )}
+
+        {/* Session */}
+        {session && (
+          <div className="session-badge" style={{ background:`${session.color}15`, border:`1px solid ${session.color}35`, marginBottom:10 }}>
+            <span style={{ fontSize:24 }}>🏋️</span>
+            <div>
+              <div style={{ color:session.color, fontSize:17, letterSpacing:2 }}>{session.label}</div>
+              <div style={{ color:'#777', fontSize:11, fontFamily:'Inter,sans-serif' }}>{session.muscles}</div>
+              <div style={{ color:'#555', fontSize:10, fontFamily:'Inter,sans-serif', marginTop:2 }}>
+                {isPSMF ? '3–4 séries · 10–12 reps · 70% 1RM · repos 75s' : '4–5 séries · 8–12 reps · 80% 1RM · repos 90s'}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Nutrition box */}
+        <div className="card" style={{ marginBottom:10 }}>
+          <div className="label">NUTRITION DU JOUR</div>
+          {isPSMF ? (
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+              {[{l:'CALORIES',v:'600 kcal',c:'#ef4444'},{l:'PROTÉINES',v:'180–200g',c:'#3b82f6'},{l:'GLUCIDES',v:'< 10g',c:'#555'}].map(n=>(
+                <div key={n.l} style={{ background:'#1a1a1a', borderRadius:8, padding:'10px 8px', textAlign:'center' }}>
+                  <div style={{ color:n.c, fontSize:14 }}>{n.v}</div>
+                  <div style={{ color:'#444', fontSize:8, letterSpacing:1, marginTop:3 }}>{n.l}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+              {[{l:'CALORIES',v:'2200 kcal',c:'#22c55e'},{l:'GLUCIDES',v:'400–500g',c:'#f59e0b'},{l:'PROTÉINES',v:'180g',c:'#3b82f6'}].map(n=>(
+                <div key={n.l} style={{ background:'#1a1a1a', borderRadius:8, padding:'10px 8px', textAlign:'center' }}>
+                  <div style={{ color:n.c, fontSize:14 }}>{n.v}</div>
+                  <div style={{ color:'#444', fontSize:8, letterSpacing:1, marginTop:3 }}>{n.l}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Tasks */}
+        <div className="label" style={{ paddingLeft:4, marginBottom:10 }}>OBJECTIFS — ENTRE TES VRAIES VALEURS</div>
+        {tasks.map(task => <TaskInput key={task.id} task={task} dayIdx={dayIdx} />)}
+
+        {/* Daily summary */}
+        <div style={{ marginTop:4, background:'#0f0f0f', border:'1px solid #1a1a1a', borderRadius:14, padding:'14px 16px' }}>
+          <div className="label">BILAN JOURNALIER</div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+            <div style={{ textAlign:'center' }}>
+              <div style={{ color:'#22c55e', fontSize:28, lineHeight:1 }}>{earnedFatG}g</div>
+              <div style={{ color:'#22c55e60', fontSize:9, fontFamily:'Inter,sans-serif', marginTop:3 }}>gras brûlé aujourd'hui</div>
+            </div>
+            <div style={{ textAlign:'center' }}>
+              <div style={{ color: fatG > 0 ? '#ef4444' : '#333', fontSize:28, lineHeight:1 }}>{fatG}g</div>
+              <div style={{ color: fatG > 0 ? '#ef444460' : '#333', fontSize:9, fontFamily:'Inter,sans-serif', marginTop:3 }}>
+                {fatG > 0 ? 'gras non brûlé' : 'aucune perte manquée ✓'}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Penalty or perfect */}
+        {fatG > 0 && (
+          <div className="penalty-box">
+            <div style={{ color:'#ef4444', fontSize:10, letterSpacing:3, marginBottom:10 }}>⚠️ GRAISSE NON BRÛLÉE</div>
+            <div style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:8 }}>
+              <span style={{ color:'#ef4444', fontSize:44, lineHeight:1 }}>{fatG}g</span>
+              <span style={{ color:'#ef444470', fontSize:13 }}>de gras conservé</span>
+            </div>
+            <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
+              {tasks.filter(t => t.kcalFull > 0).map(t => {
+                const val = getValue(dayIdx, t.id);
+                const prog = getTaskProgress(t, val);
+                if (prog >= 1) return null;
+                const missed = Math.round((1-prog) * t.kcalFull * FAT_PER_KCAL);
+                return (
+                  <div key={t.id} style={{ background:'#ef444415', border:'1px solid #ef444330', borderRadius:6, padding:'4px 10px' }}>
+                    <span style={{ color:'#ef444490', fontSize:11 }}>
+                      {t.icon} {Math.round(prog*100)}% → +{missed}g
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ color:'#444', fontSize:10, fontFamily:'Inter,sans-serif' }}>
+              {Math.round(uncheckedKcal)} kcal non dépensées · Améliore tes valeurs pour réduire ce chiffre
+            </div>
+          </div>
+        )}
+        {completion >= 100 && (
+          <div className="perfect-box">
+            <div style={{ fontSize:32, marginBottom:6 }}>🔥</div>
+            <div style={{ color:'#22c55e', fontSize:22, letterSpacing:3 }}>JOURNÉE PARFAITE</div>
+            <div style={{ color:'#22c55e60', fontSize:11, fontFamily:'Inter,sans-serif', marginTop:4 }}>+{earnedFatG}g de gras éliminé aujourd'hui</div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function CalendarView() {
+    return (
+      <div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:14 }}>
+          {[{c:1,start:0},{c:2,start:39},{c:3,start:78}].map(cy => {
+            const daysIn = Array.from({length:39},(_,i)=>cy.start+i);
+            const perfect = daysIn.filter(i=>i<=todayIdx&&getCompletion(i)>=100).length;
+            const done = daysIn.filter(i=>i<=todayIdx).length;
+            const avgComp = done > 0 ? Math.round(daysIn.filter(i=>i<=todayIdx).reduce((s,i)=>s+getCompletion(i),0)/done) : 0;
+            return (
+              <div key={cy.c} style={{ background:'#111', border:'1px solid #1a1a1a', borderRadius:12, padding:'12px 10px', textAlign:'center' }}>
+                <div style={{ color:'#ef4444', fontSize:22 }}>C{cy.c}</div>
+                <div style={{ color:'#22c55e', fontSize:14 }}>{avgComp > 0 ? `${avgComp}%` : '—'}</div>
+                <div style={{ color:'#444', fontSize:8, letterSpacing:1, marginTop:2 }}>moy. complétion</div>
+              </div>
+            );
+          })}
+        </div>
+
+        {Array.from({length:117},(_,i)=>{
+          const date = addDays(START_DATE, i);
+          const phase = getPhase(i);
+          const isPSMF = phase?.phase === "PSMF";
+          const completion = getCompletion(i);
+          const weight = WEIGHTS[Math.min(i, WEIGHTS.length-1)];
+          const milestone = MILESTONES.find(m=>m.d===i);
+          const isToday = i===todayIdx;
+          const isExpanded = expandedDay===i;
+          const uncheckedKcal = getUncheckedKcal(i);
+          const fatG = Math.round(uncheckedKcal * FAT_PER_KCAL);
+          const dow = date.getDay();
+          const session = DOW_SESSIONS[dow];
+          const color = getTaskColor(completion/100);
+
+          return (
+            <div key={i}>
+              {milestone && (
+                <div style={{ display:'flex',alignItems:'center',gap:8,margin:'10px 0 4px',padding:'8px 12px',background:'#1a1500',border:'1px solid #f59e0b30',borderRadius:8 }}>
+                  <span style={{ fontSize:16 }}>{milestone.icon}</span>
+                  <span style={{ color:'#f59e0b', fontSize:12, letterSpacing:2 }}>{milestone.label} — {milestone.w} KG</span>
+                </div>
+              )}
+              <div className={`day-row ${isToday?'today':''}`} onClick={()=>setExpandedDay(isExpanded?null:i)}>
+                <svg width="34" height="34" viewBox="0 0 32 32" style={{flexShrink:0}}>
+                  <circle cx="16" cy="16" r="13" fill="none" stroke="#1a1a1a" strokeWidth="2.5"/>
+                  <circle cx="16" cy="16" r="13" fill="none"
+                    stroke={completion >= 100 ? "#22c55e" : completion >= 70 ? "#84cc16" : completion > 0 ? "#f59e0b" : "#333"}
+                    strokeWidth="2.5"
+                    strokeDasharray={`${(completion/100)*81.7} 81.7`}
+                    className="progress-ring"
+                  />
+                  <text x="16" y="20" textAnchor="middle" fill={completion>0?color:"#333"}
+                    style={{fontSize:'8px',fontFamily:'Inter,sans-serif',fontWeight:600}}>
+                    {completion}%
+                  </text>
+                </svg>
+                <div style={{flex:1, minWidth:0}}>
+                  <div style={{display:'flex',alignItems:'center',gap:6}}>
+                    <span style={{color:isToday?'#f59e0b':'#ccc',fontSize:12,letterSpacing:1}}>J{i+1} · {fmtDate(date)}</span>
+                    {isToday&&<span style={{background:'#f59e0b',color:'#000',fontSize:7,padding:'1px 5px',borderRadius:3,letterSpacing:1,flexShrink:0}}>AUJOURD'HUI</span>}
+                  </div>
+                  <div style={{color:'#444',fontSize:9,marginTop:2,display:'flex',alignItems:'center',gap:4}}>
+                    <span style={{color:isPSMF?'#ef444470':'#22c55e70'}}>{phase?.phase} C{phase?.cycle}</span>
+                    <span>·</span><span>{weight.toFixed(1)} kg</span>
+                    {session&&<span style={{color:`${session.color}70`}}>· {session.label}</span>}
+                  </div>
+                </div>
+                {fatG > 0 && i <= todayIdx && (
+                  <div style={{background:'#1a0505',border:'1px solid #ef444330',borderRadius:6,padding:'4px 8px',textAlign:'center',flexShrink:0}}>
+                    <div style={{color:'#ef4444',fontSize:11}}>+{fatG}g</div>
+                    <div style={{color:'#555',fontSize:8}}>gras</div>
+                  </div>
+                )}
+                {completion>=100&&i<=todayIdx&&<span style={{color:'#22c55e',fontSize:18,flexShrink:0}}>✦</span>}
+              </div>
+              {isExpanded&&(
+                <div style={{background:'#080808',border:'1px solid #1a1a1a',borderRadius:12,padding:'14px',marginBottom:4}}>
+                  <DayView dayIdx={i}/>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function StatsView() {
+    const totalFatG = Array.from({length:117},(_,i)=>getUncheckedKcal(i)).reduce((a,b)=>a+b,0);
+    const totalFatKg = (totalFatG*FAT_PER_KCAL/1000).toFixed(1);
+    const avgComp = todayIdx >= 0 ? Math.round(Array.from({length:todayIdx+1},(_,i)=>getCompletion(i)).reduce((a,b)=>a+b,0)/(todayIdx+1)) : 0;
+    const currentW = WEIGHTS[Math.min(todayIdx,WEIGHTS.length-1)];
+    const currentBF = getBF(todayIdx).toFixed(1);
+    const kgLost = (98-currentW).toFixed(1);
+
+    return (
+      <div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10,marginBottom:16}}>
+          {[
+            {l:'MOY. COMPLÉTION',v:`${avgComp}%`,u:'sur tous les jours',c:'#22c55e'},
+            {l:'GRAS CONSERVÉ',v:`${totalFatKg}kg`,u:'non brûlé total',c:'#ef4444'},
+            {l:'POIDS OBJECTIF',v:`${currentW.toFixed(1)}kg`,u:`−${kgLost} kg`,c:'#f59e0b'},
+            {l:'BODYFAT EST.',v:`${currentBF}%`,u:'objectif du jour',c:'#8b5cf6'},
+          ].map(s=>(
+            <div key={s.l} style={{background:'#0f0f0f',border:'1px solid #1a1a1a',borderRadius:14,padding:'16px'}}>
+              <div style={{color:'#555',fontSize:9,letterSpacing:2,marginBottom:8}}>{s.l}</div>
+              <div style={{color:s.c,fontSize:32,lineHeight:1}}>{s.v}</div>
+              <div style={{color:'#333',fontSize:10,fontFamily:'Inter,sans-serif',marginTop:6}}>{s.u}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{color:'#555',fontSize:10,letterSpacing:3,marginBottom:10}}>MILESTONES</div>
+        {MILESTONES.map((m,idx)=>{
+          const reached = todayIdx>=m.d;
+          const mDate = addDays(START_DATE, m.d);
+          return (
+            <div key={idx} style={{display:'flex',alignItems:'center',gap:14,padding:'12px 14px',marginBottom:6,background:reached?'#0a1a0a':'#0a0a0a',border:`1px solid ${reached?'#22c55e30':'#1a1a1a'}`,borderRadius:12}}>
+              <span style={{fontSize:22,opacity:reached?1:0.3}}>{m.icon}</span>
+              <div style={{flex:1}}>
+                <div style={{color:reached?'#22c55e':'#555',fontSize:13,letterSpacing:1}}>{m.label}</div>
+                <div style={{color:'#333',fontSize:9,fontFamily:'Inter,sans-serif',marginTop:3}}>
+                  {fmtDate(mDate).toUpperCase()} · {m.w} KG · {m.bf}% BF
+                </div>
+              </div>
+              {reached&&<span style={{color:'#22c55e',fontSize:20}}>✓</span>}
+            </div>
+          );
+        })}
+
+        <div style={{color:'#555',fontSize:10,letterSpacing:3,marginTop:16,marginBottom:10}}>SUPPLÉMENTS QUOTIDIENS</div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+          {[
+            {n:'Créatine',d:'5g — matin',c:'#3b82f6'},
+            {n:'Électrolytes',d:'matin + soir',c:'#f59e0b'},
+            {n:'Multivitamines',d:'midi',c:'#22c55e'},
+            {n:'Caféine',d:'100–200mg pré-entr.',c:'#ef4444'},
+            {n:'Oméga-3',d:'2–3g — soir',c:'#8b5cf6'},
+          ].map(s=>(
+            <div key={s.n} style={{background:'#0f0f0f',border:`1px solid ${s.c}20`,borderRadius:10,padding:'10px 12px'}}>
+              <div style={{color:s.c,fontSize:13}}>{s.n}</div>
+              <div style={{color:'#444',fontSize:10,fontFamily:'Inter,sans-serif'}}>{s.d}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const progress = Math.round((todayIdx/116)*100);
+  const currentW = WEIGHTS[Math.min(todayIdx,WEIGHTS.length-1)];
+
+  return (
+    <div id="root">
+      <div className="header">
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+          <div>
+            <div style={{color:'#ef4444',fontSize:9,letterSpacing:4,marginBottom:3}}>TRANSFORMATION PROTOCOL</div>
+            <div style={{fontSize:26,letterSpacing:2}}>98 KG → 70 KG</div>
+          </div>
+          <div style={{textAlign:'right'}}>
+            <div style={{color:'#ef4444',fontSize:32,lineHeight:1}}>{116-todayIdx}</div>
+            <div style={{color:'#444',fontSize:8,letterSpacing:2}}>JOURS RESTANTS</div>
+          </div>
+        </div>
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:5}}>
+          <span style={{color:'#333',fontSize:9}}>16 MAR 2026</span>
+          <span style={{color:'#ef4444',fontSize:9}}>{progress}% · {currentW.toFixed(1)} KG</span>
+          <span style={{color:'#333',fontSize:9}}>10 JUIL 2026</span>
+        </div>
+        <div style={{background:'#111',borderRadius:3,height:4,overflow:'hidden'}}>
+          <div style={{width:`${progress}%`,height:'100%',borderRadius:3,background:'linear-gradient(90deg,#ef4444,#f97316)',transition:'width 0.5s'}}/>
+        </div>
+      </div>
+
+      <div className="nav">
+        {[['today',"AUJOURD'HUI"],['calendar','CALENDRIER'],['stats','STATS']].map(([id,label])=>(
+          <button key={id} className={`nav-btn ${view===id?'active':''}`} onClick={()=>setView(id)}>{label}</button>
+        ))}
+      </div>
+
+      <div className="scroll-area">
+        <div style={{padding:'14px 14px 0'}}>
+          {view==='today'&&<DayView dayIdx={todayIdx}/>}
+          {view==='calendar'&&<CalendarView/>}
+          {view==='stats'&&<StatsView/>}
+        </div>
+      </div>
+
+      <div className="bottom-bar">
+        <button onClick={()=>setView('calendar')} style={{flex:1,padding:'11px',background:'#111',border:'1px solid #222',borderRadius:10,color:'#666',fontSize:16}}>📅</button>
+        <button onClick={()=>setView('today')} style={{flex:3,padding:'11px',background:'#ef4444',border:'none',borderRadius:10,color:'#fff',fontSize:12,letterSpacing:2}}>
+          JOUR {todayIdx+1} · {fmtDate(addDays(START_DATE,todayIdx)).toUpperCase()}
+        </button>
+        <button onClick={()=>setView('stats')} style={{flex:1,padding:'11px',background:'#111',border:'1px solid #222',borderRadius:10,color:'#666',fontSize:16}}>📊</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
