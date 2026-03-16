@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANSFORMATION">
+<meta name="theme-color" content="#050505">
+<title>98→70 KG PROTOCOL</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:#050505;color:#fff;height:100%;overflow:hidden;font-family:'Bebas Neue',Impact,sans-serif}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:90px}
+::-webkit-scrollbar{display:none}
+
+/* HEADER */
+.header{background:linear-gradient(180deg,#0f0000,#050505);padding:48px 18px 14px;border-bottom:1px solid #1a1a1a;flex-shrink:0}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.header-title{color:#ef4444;font-size:9px;letter-spacing:4px;margin-bottom:3px}
+.header-main{font-size:26px;letter-spacing:2px}
+.header-days{color:#ef4444;font-size:32px;line-height:1;text-align:right}
+.header-days-label{color:#444;font-size:8px;letter-spacing:2px;text-align:right}
+.progress-labels{display:flex;justify-content:space-between;margin-bottom:5px}
+.progress-label{color:#333;font-size:9px}
+.progress-label.center{color:#ef4444;font-size:9px}
+.progress-track{background:#111;border-radius:3px;height:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#ef4444,#f97316);transition:width .5s}
+
+/* NAV */
+.nav{display:flex;background:#0a0a0a;border-bottom:1px solid #1a1a1a;flex-shrink:0}
+.nav-btn{flex:1;padding:13px 0;background:transparent;border:none;border-bottom:2px solid transparent;color:#555;font-size:11px;letter-spacing:2px;cursor:pointer;font-family:'Bebas Neue',Impact,sans-serif;transition:all .2s}
+.nav-btn.active{color:#ef4444;border-bottom-color:#ef4444}
+
+/* CARDS */
+.card{background:#0f0f0f;border:1px solid #1a1a1a;border-radius:14px;padding:14px;margin-bottom:10px}
+.card-red{background:linear-gradient(135deg,#0f0f0f,#1a0a0a);border-color:#ef444330}
+.card-green{background:linear-gradient(135deg,#0a0f0a,#0a1a0a);border-color:#22c55e30}
+.label{color:#555;font-size:10px;letter-spacing:3px;margin-bottom:8px}
+
+/* PHASE HEADER */
+.phase-top{display:flex;justify-content:space-between;align-items:flex-start}
+.phase-info{}
+.phase-date-label{color:#555;font-size:10px;letter-spacing:3px;margin-bottom:6px}
+.today-badge{margin-left:8px;background:#f59e0b;color:#000;font-size:8px;padding:2px 6px;border-radius:3px}
+.phase-badges{display:flex;align-items:center;gap:8px}
+.phase-badge{color:white;padding:3px 12px;border-radius:5px;font-size:13px;letter-spacing:2px}
+.phase-badge.psmf{background:#ef4444}
+.phase-badge.refeed{background:#22c55e}
+.phase-sub{color:#666;font-size:11px}
+.phase-weight{text-align:right}
+.phase-kg{font-size:30px;line-height:1;color:#fff}
+.phase-kg span{font-size:13px;color:#555}
+.phase-bf{color:#f59e0b;font-size:13px;margin-top:2px}
+.comp-row{display:flex;justify-content:space-between;margin:12px 0 4px}
+.comp-label{color:#555;font-size:10px;letter-spacing:2px}
+.comp-val{font-size:12px}
+.comp-track{background:#1a1a1a;border-radius:4px;height:5px;overflow:hidden}
+.comp-fill{height:100%;border-radius:4px;transition:width .3s}
+
+/* MILESTONE */
+.milestone{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 14px;background:#1a1500;border:1px solid #f59e0b40;border-radius:10px;animation:shimmer 3s infinite}
+@keyframes shimmer{0%,100%{border-color:#f59e0b40}50%{border-color:#f59e0baa}}
+.milestone-icon{font-size:22px}
+.milestone-name{color:#f59e0b;font-size:15px;letter-spacing:2px}
+.milestone-sub{color:#888;font-size:10px;font-family:'Inter',sans-serif}
+
+/* SESSION */
+.session{border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.session-icon{font-size:24px}
+.session-label{font-size:17px;letter-spacing:2px}
+.session-muscles{color:#777;font-size:11px;font-family:'Inter',sans-serif}
+.session-protocol{color:#555;font-size:10px;font-family:'Inter',sans-serif;margin-top:2px}
+
+/* NUTRITION GRID */
+.nutri-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.nutri-cell{background:#1a1a1a;border-radius:8px;padding:10px 8px;text-align:center}
+.nutri-val{font-size:14px}
+.nutri-lbl{color:#444;font-size:8px;letter-spacing:1px;margin-top:3px}
+.nutri-sources{margin-top:10px;padding:8px 12px;background:#1a1a1a;border-radius:8px}
+.nutri-sources-lbl{color:#555;font-size:9px;letter-spacing:2px;margin-bottom:4px}
+.nutri-sources-val{color:#888;font-size:11px;font-family:'Inter',sans-serif}
+
+/* TASK CARD */
+.task-card{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:14px;padding:14px;margin-bottom:8px;transition:border-color .2s,background .2s}
+.task-card.full{border-color:#22c55e40;background:#0a140a}
+.task-card.partial{border-color:#f59e0b30;background:#0f0e08}
+.task-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.task-emoji{font-size:22px}
+.task-label-wrap{flex:1}
+.task-label-row{display:flex;justify-content:space-between;align-items:center}
+.task-name{font-size:14px;letter-spacing:1px}
+.task-val{font-size:16px;min-width:80px;text-align:right}
+.task-note{color:#444;font-size:9px;font-family:'Inter',sans-serif;margin-top:1px}
+.task-progress-track{background:#1a1a1a;border-radius:3px;height:4px;margin-bottom:10px;overflow:hidden}
+.task-progress-fill{height:100%;border-radius:3px;transition:width .2s}
+
+/* SLIDER */
+.slider-wrap{position:relative;padding:4px 0 2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:transparent;cursor:pointer;outline:none;position:relative;z-index:2}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#1e1e1e}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:2px solid #333;margin-top:-9px;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.track-fill{position:absolute;top:50%;left:0;height:6px;border-radius:3px;transform:translateY(-50%);pointer-events:none;z-index:1;transition:width .1s}
+
+/* NUMBER INPUT */
+.num-input{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#fff;font-family:'Bebas Neue',Impact,sans-serif;font-size:22px;text-align:center;width:100%;padding:8px 12px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.num-input:focus{border-color:#f59e0b60}
+
+/* QUICK BUTTONS */
+.quick-btns{display:flex;gap:6px;margin-top:8px}
+.qbtn{flex:1;padding:6px 0;border-radius:6px;font-family:'Bebas Neue',Impact,sans-serif;font-size:10px;letter-spacing:1px;cursor:pointer;border:1px solid #2a2a2a;background:#1a1a1a;color:#555;transition:all .15s}
+.qbtn:active{transform:scale(.95)}
+
+/* BOOLEAN BTN */
+.bool-btn{width:100%;padding:10px;border-radius:10px;font-family:'Bebas Neue',Impact,sans-serif;font-size:13px;letter-spacing:2px;cursor:pointer;transition:all .2s;border:1px solid #2a2a2a;background:#1a1a1a;color:#666}
+.bool-btn.done{background:#22c55e20;border-color:#22c55e50;color:#22c55e}
+
+/* TASK FEEDBACK */
+.task-feedback{margin-top:10px;padding:8px 12px;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
+.task-feedback.good{background:#22c55e10;border:1px solid #22c55e25}
+.task-feedback.bad{background:#ef444410;border:1px solid #ef444425}
+.tf-label{font-size:10px;font-family:'Inter',sans-serif}
+.tf-val{font-size:13px;letter-spacing:1px}
+
+/* DAILY SUMMARY */
+.day-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center}
+.ds-val{font-size:28px;line-height:1}
+.ds-lbl{font-size:9px;font-family:'Inter',sans-serif;margin-top:3px}
+
+/* PENALTY */
+.penalty{background:linear-gradient(135deg,#1a0505,#0f0000);border:2px solid #ef444455;border-radius:14px;padding:16px 18px;margin-top:10px;animation:pulse-red 2s infinite}
+@keyframes pulse-red{0%,100%{border-color:#ef444455}50%{border-color:#ef4444aa}}
+.penalty-title{color:#ef4444;font-size:10px;letter-spacing:3px;margin-bottom:10px}
+.penalty-main{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+.penalty-g{color:#ef4444;font-size:44px;line-height:1}
+.penalty-sub{color:#ef444470;font-size:13px}
+.penalty-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.penalty-tag{background:#ef444415;border:1px solid #ef444330;border-radius:6px;padding:4px 10px;color:#ef444490;font-size:11px}
+.penalty-note{color:#444;font-size:10px;font-family:'Inter',sans-serif}
+
+/* PERFECT */
+.perfect{background:linear-gradient(135deg,#0a1a0a,#051a05);border:2px solid #22c55e60;border-radius:14px;padding:18px;margin-top:10px;text-align:center}
+.perfect-icon{font-size:32px;margin-bottom:6px}
+.perfect-title{color:#22c55e;font-size:22px;letter-spacing:3px}
+.perfect-sub{color:#22c55e60;font-size:11px;font-family:'Inter',sans-serif;margin-top:4px}
+
+/* CALENDAR */
+.cycle-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.cycle-card{background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:12px 10px;text-align:center}
+.cycle-num{color:#ef4444;font-size:22px}
+.cycle-stat{color:#22c55e;font-size:14px}
+.cycle-lbl{color:#444;font-size:8px;letter-spacing:1px;margin-top:2px}
+
+.day-row{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:4px;background:#0a0a0a;border:1px solid #111;border-radius:10px;cursor:pointer;transition:all .15s}
+.day-row.today{background:#1a0e00;border-color:#f59e0b40}
+.day-row:active{transform:scale(.99)}
+.day-info{flex:1;min-width:0}
+.day-title-row{display:flex;align-items:center;gap:6px}
+.day-title{font-size:12px;letter-spacing:1px}
+.day-title.today-color{color:#f59e0b}
+.day-today-badge{background:#f59e0b;color:#000;font-size:7px;padding:1px 5px;border-radius:3px;letter-spacing:1px;flex-shrink:0}
+.day-sub{color:#444;font-size:9px;margin-top:2px;display:flex;align-items:center;gap:4px}
+.day-fat-badge{background:#1a0505;border:1px solid #ef444330;border-radius:6px;padding:4px 8px;text-align:center;flex-shrink:0}
+.day-fat-val{color:#ef4444;font-size:11px}
+.day-fat-lbl{color:#555;font-size:8px}
+.day-expanded{background:#080808;border:1px solid #1a1a1a;border-radius:12px;padding:14px;margin-bottom:4px}
+.day-perfect-mark{color:#22c55e;font-size:18px;flex-shrink:0}
+
+/* MILESTONE BANNER (calendar) */
+.milestone-row{display:flex;align-items:center;gap:8px;margin:10px 0 4px;padding:8px 12px;background:#1a1500;border:1px solid #f59e0b30;border-radius:8px}
+.milestone-row-icon{font-size:16px}
+.milestone-row-label{color:#f59e0b;font-size:12px;letter-spacing:2px}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat-card{background:#0f0f0f;border:1px solid #1a1a1a;border-radius:14px;padding:16px}
+.stat-label{color:#555;font-size:9px;letter-spacing:2px;margin-bottom:8px}
+.stat-val{font-size:32px;line-height:1}
+.stat-sub{color:#333;font-size:10px;font-family:'Inter',sans-serif;margin-top:6px}
+
+.ms-row{display:flex;align-items:center;gap:14px;padding:12px 14px;margin-bottom:6px;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:12px}
+.ms-row.reached{background:#0a1a0a;border-color:#22c55e30}
+.ms-icon{font-size:22px}
+.ms-name{font-size:13px;letter-spacing:1px}
+.ms-name.reached-color{color:#22c55e}
+.ms-name.not-reached{color:#555}
+.ms-date{color:#333;font-size:9px;font-family:'Inter',sans-serif;margin-top:3px}
+.ms-check{color:#22c55e;font-size:20px}
+
+.plan-row{display:flex;align-items:center;gap:12px;padding:10px 14px;margin-bottom:4px;background:#0a0a0a;border-radius:8px}
+.plan-bar{width:3px;height:36px;border-radius:2px;flex-shrink:0}
+.plan-name{font-size:12px;letter-spacing:2px}
+.plan-dates{color:#333;font-size:10px;font-family:'Inter',sans-serif}
+.plan-days{color:#444;font-size:12px}
+
+.supps-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.supp-card{background:#0f0f0f;border-radius:10px;padding:10px 12px}
+.supp-name{font-size:13px}
+.supp-dose{color:#444;font-size:10px;font-family:'Inter',sans-serif}
+
+/* BOTTOM BAR */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#050505;border-top:1px solid #1a1a1a;padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;z-index:200;max-width:600px;margin:0 auto}
+.bb-side{flex:1;padding:11px;background:#111;border:1px solid #222;border-radius:10px;color:#666;font-size:16px;cursor:pointer;font-family:'Bebas Neue',Impact,sans-serif}
+.bb-main{flex:3;padding:11px;background:#ef4444;border:none;border-radius:10px;color:#fff;font-size:12px;letter-spacing:2px;cursor:pointer;font-family:'Bebas Neue',Impact,sans-serif}
+
+/* SVG RING */
+.ring{transform:rotate(-90deg);transform-origin:16px 16px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="header-title">TRANSFORMATION PROTOCOL</div>
+        <div class="header-main">98 KG → 70 KG</div>
+      </div>
+      <div>
+        <div class="header-days" id="days-left">—</div>
+        <div class="header-days-label">JOURS RESTANTS</div>
+      </div>
+    </div>
+    <div class="progress-labels">
+      <span class="progress-label">16 MAR 2026</span>
+      <span class="progress-label center" id="progress-center">—</span>
+      <span class="progress-label">10 JUIL 2026</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="switchView('today')">AUJOURD'HUI</button>
+    <button class="nav-btn" onclick="switchView('calendar')">CALENDRIER</button>
+    <button class="nav-btn" onclick="switchView('stats')">STATS</button>
+  </div>
+
+  <div class="scroll" id="scroll-area">
+    <div style="padding:14px 14px 0" id="view-content"></div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="bb-side" onclick="switchView('calendar')">📅</button>
+    <button class="bb-main" id="bb-main-btn" onclick="switchView('today')">—</button>
+    <button class="bb-side" onclick="switchView('stats')">📊</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const START = new Date("2026-03-16T00:00:00");
+const FAT = 1000/7700;
+
+const WEIGHTS=[98,97.6,97.3,96.9,96.6,96.2,95.9,95.5,95.1,94.8,94.4,94.1,93.7,93.4,93,92.6,92.3,91.9,91.6,91.2,90.9,90.5,90.2,89.8,89.5,89.1,88.8,88.4,88.1,87.7,87.4,87,86.7,86.3,86,85.8,85.7,85.6,85.5,85.5,85.2,84.8,84.5,84.1,83.8,83.4,83.1,82.7,82.4,82,81.7,81.3,81,80.6,80.3,79.9,79.6,79.2,78.9,78.5,78.2,77.8,77.5,77.1,76.8,76.4,76.1,75.7,75.4,75,74.7,74.3,74,74,73.9,73.8,73.7,73.7,73.3,73,72.6,72.3,71.9,71.6,71.2,70.9,70.5,70.2,69.8,69.5,69.1,68.8,68.4,68.1,67.7,67.4,67,66.7,66.3,66,65.6,65.3,64.9,64.6,64.2,63.9,63.5,63.2,62.8,62.5,62.1,61.8,61.8,61.7,61.6,61.5];
+
+function getPhase(d){
+  if(d<35)return{cycle:1,phase:"PSMF",cd:d+1,total:35};
+  if(d<39)return{cycle:1,phase:"REFEED",cd:d-34,total:4};
+  if(d<74)return{cycle:2,phase:"PSMF",cd:d-38,total:35};
+  if(d<78)return{cycle:2,phase:"REFEED",cd:d-73,total:4};
+  if(d<113)return{cycle:3,phase:"PSMF",cd:d-77,total:35};
+  if(d<117)return{cycle:3,phase:"REFEED",cd:d-112,total:4};
+  return null;
+}
+function addDays(n){const d=new Date(START);d.setDate(d.getDate()+n);return d;}
+function fmtDate(d){return d.toLocaleDateString("fr-FR",{weekday:"short",day:"numeric",month:"short"});}
+function getBF(d){return Math.max(14,32-(d/116)*18);}
+function W(d){return WEIGHTS[Math.min(d,WEIGHTS.length-1)];}
+
+const SESSIONS={1:{label:"PUSH",muscles:"Pecto · Épaules · Triceps",color:"#ef4444"},2:{label:"PULL",muscles:"Dos · Biceps · Arrière épaules",color:"#3b82f6"},4:{label:"LEGS",muscles:"Quadri · Fessiers · Ischio · Mollets",color:"#8b5cf6"},5:{label:"FULL BODY",muscles:"Tous groupes — circuit rappel",color:"#f59e0b"}};
+
+const MILESTONES=[
+  {d:0,label:"DÉBUT — JOUR J",w:98,bf:32,icon:"🚀"},
+  {d:13,label:"−5 KG",w:93,bf:30,icon:"⚡"},
+  {d:34,label:"FIN PSMF CYCLE 1",w:86,bf:27,icon:"🔥"},
+  {d:38,label:"FIN REFEED C1",w:85.5,bf:26.5,icon:"💧"},
+  {d:55,label:"−20 KG TOTAL",w:78,bf:22,icon:"💪"},
+  {d:73,label:"FIN PSMF CYCLE 2",w:74,bf:19,icon:"🔥"},
+  {d:77,label:"FIN REFEED C2",w:73.7,bf:18.5,icon:"💧"},
+  {d:95,label:"SOUS 70 KG",w:69,bf:16,icon:"🎯"},
+  {d:112,label:"FIN PSMF CYCLE 3",w:62,bf:14.5,icon:"🔥"},
+  {d:116,label:"🏆 OBJECTIF ATTEINT",w:61.5,bf:14,icon:"🏆"},
+];
+
+function getTasks(dayIdx){
+  const phase=getPhase(dayIdx);
+  const dow=addDays(dayIdx).getDay();
+  const isMusc=[1,2,4,5].includes(dow);
+  const isPSMF=phase&&phase.phase==="PSMF";
+  const base=isPSMF?[
+    {id:"steps",icon:"👟",label:"Steps",type:"steps",target:15000,unit:"steps",kcal:525},
+    {id:"incline",icon:"⛰️",label:"Marche inclinée",type:"slider",target:45,unit:"min",kcal:400},
+    {id:"nutrition",icon:"🥩",label:"Nutrition 600kcal",type:"pct",target:100,unit:"%",kcal:1835,note:"% du protocole respecté"},
+    {id:"water",icon:"💧",label:"Eau",type:"water",target:4,unit:"L",kcal:0},
+    {id:"supps",icon:"💊",label:"Suppléments",type:"bool",target:1,unit:"",kcal:0},
+  ]:[
+    {id:"steps",icon:"👟",label:"Steps",type:"steps",target:15000,unit:"steps",kcal:525},
+    {id:"incline",icon:"⛰️",label:"Marche inclinée",type:"slider",target:20,unit:"min",kcal:180},
+    {id:"nutrition",icon:"🍚",label:"Refeed 2200kcal",type:"pct",target:100,unit:"%",kcal:0,note:"% du refeed respecté"},
+    {id:"water",icon:"💧",label:"Eau",type:"water",target:4,unit:"L",kcal:0},
+    {id:"supps",icon:"💊",label:"Suppléments",type:"bool",target:1,unit:"",kcal:0},
+  ];
+  if(isMusc)base.push({id:"muscu",icon:"🏋️",label:"Séance muscu",type:"pct",target:100,unit:"%",kcal:isPSMF?480:600,note:"% de la séance effectuée"});
+  return base;
+}
+
+// ============================================================
+// STORAGE
+// ============================================================
+let DATA={};
+function load(){try{DATA=JSON.parse(localStorage.getItem("ft_v5")||"{}");}catch{DATA={};}}
+function save(){try{localStorage.setItem("ft_v5",JSON.stringify(DATA));}catch{}}
+function getVal(d,id){return DATA[d+"_"+id];}
+function setVal(d,id,v){DATA[d+"_"+id]=v;save();renderView();}
+
+function getProgress(task,val){
+  if(val===undefined||val===null||val==="")return 0;
+  if(task.type==="bool")return val>=1?1:0;
+  return Math.min(1,parseFloat(val)/task.target);
+}
+function getColor(p){
+  if(p>=1)return"#22c55e";
+  if(p>=.7)return"#84cc16";
+  if(p>=.4)return"#f59e0b";
+  if(p>0)return"#f97316";
+  return"#ef4444";
+}
+function getCompletion(d){
+  const tasks=getTasks(d);
+  const sum=tasks.reduce((s,t)=>s+getProgress(t,getVal(d,t.id)),0);
+  return Math.round((sum/tasks.length)*100);
+}
+function getUncheckedKcal(d){
+  return getTasks(d).reduce((s,t)=>s+(1-getProgress(t,getVal(d,t.id)))*(t.kcal||0),0);
+}
+
+// ============================================================
+// VIEWS
+// ============================================================
+let currentView="today";
+let expandedDay=null;
+let todayIdx=0;
+
+function switchView(v){
+  currentView=v;
+  document.querySelectorAll(".nav-btn").forEach((b,i)=>{
+    b.classList.toggle("active",["today","calendar","stats"][i]===v);
+  });
+  renderView();
+  document.getElementById("scroll-area").scrollTop=0;
+}
+
+function renderView(){
+  const el=document.getElementById("view-content");
+  if(currentView==="today")el.innerHTML=renderDay(todayIdx);
+  else if(currentView==="calendar")el.innerHTML=renderCalendar();
+  else el.innerHTML=renderStats();
+  bindEvents();
+}
+
+// ============================================================
+// DAY VIEW
+// ============================================================
+function renderDay(d){
+  const date=addDays(d);
+  const phase=getPhase(d);
+  const dow=date.getDay();
+  const session=SESSIONS[dow];
+  const isPSMF=phase&&phase.phase==="PSMF";
+  const weight=W(d);
+  const bf=getBF(d).toFixed(1);
+  const tasks=getTasks(d);
+  const comp=getCompletion(d);
+  const compColor=getColor(comp/100);
+  const milestone=MILESTONES.find(m=>m.d===d);
+  const isToday=d===todayIdx;
+  const uncheckedKcal=getUncheckedKcal(d);
+  const fatG=Math.round(uncheckedKcal*FAT);
+  const earnedKcal=tasks.reduce((s,t)=>s+getProgress(t,getVal(d,t.id))*(t.kcal||0),0);
+  const earnedG=Math.round(earnedKcal*FAT);
+  const compFill=`background:${comp>=100?"linear-gradient(90deg,#22c55e,#4ade80)":comp>=70?"linear-gradient(90deg,#84cc16,#a3e635)":"linear-gradient(90deg,#ef4444,#f97316)"}`;
+
+  let html=`
+  <div class="card ${isPSMF?"card-red":"card-green"}" style="margin-bottom:10px">
+    <div class="phase-top">
+      <div class="phase-info">
+        <div class="phase-date-label">${"JOUR "+(d+1)+" · "+fmtDate(date).toUpperCase()}${isToday?'<span class="today-badge">AUJOURD\'HUI</span>':""}</div>
+        <div class="phase-badges">
+          <span class="phase-badge ${isPSMF?"psmf":"refeed"}">CYCLE ${phase?phase.cycle:""} · ${phase?phase.phase:""}</span>
+          <span class="phase-sub">J${phase?phase.cd:""}/${phase?phase.total:""}</span>
+        </div>
+      </div>
+      <div class="phase-weight">
+        <div class="phase-kg">${weight.toFixed(1)}<span> kg</span></div>
+        <div class="phase-bf">${bf}% BF</div>
+      </div>
+    </div>
+    <div class="comp-row"><span class="comp-label">COMPLÉTION</span><span class="comp-val" style="color:${compColor}">${comp}%</span></div>
+    <div class="comp-track"><div class="comp-fill" style="width:${comp}%;${compFill}"></div></div>
+  </div>`;
+
+  if(milestone)html+=`
+  <div class="milestone">
+    <span class="milestone-icon">${milestone.icon}</span>
+    <div><div class="milestone-name">${milestone.label}</div><div class="milestone-sub">${milestone.w} kg · ${milestone.bf}% bodyfat</div></div>
+  </div>`;
+
+  if(session)html+=`
+  <div class="session" style="background:${session.color}15;border:1px solid ${session.color}35;margin-bottom:10px">
+    <span class="session-icon">🏋️</span>
+    <div>
+      <div class="session-label" style="color:${session.color}">${session.label}</div>
+      <div class="session-muscles">${session.muscles}</div>
+      <div class="session-protocol">${isPSMF?"3–4 séries · 10–12 reps · 70% 1RM · repos 75s":"4–5 séries · 8–12 reps · 80% 1RM · repos 90s"}</div>
+    </div>
+  </div>`;
+
+  // Nutrition
+  html+=`<div class="card" style="margin-bottom:10px"><div class="label">NUTRITION DU JOUR</div><div class="nutri-grid">`;
+  if(isPSMF){
+    html+=`<div class="nutri-cell"><div class="nutri-val" style="color:#ef4444">600 kcal</div><div class="nutri-lbl">CALORIES</div></div>
+    <div class="nutri-cell"><div class="nutri-val" style="color:#3b82f6">180–200g</div><div class="nutri-lbl">PROTÉINES</div></div>
+    <div class="nutri-cell"><div class="nutri-val" style="color:#555">&lt; 10g</div><div class="nutri-lbl">GLUCIDES</div></div>`;
+  }else{
+    html+=`<div class="nutri-cell"><div class="nutri-val" style="color:#22c55e">2200 kcal</div><div class="nutri-lbl">CALORIES</div></div>
+    <div class="nutri-cell"><div class="nutri-val" style="color:#f59e0b">400–500g</div><div class="nutri-lbl">GLUCIDES</div></div>
+    <div class="nutri-cell"><div class="nutri-val" style="color:#3b82f6">180g</div><div class="nutri-lbl">PROTÉINES</div></div>`;
+  }
+  html+=`</div>`;
+  if(isPSMF)html+=`<div class="nutri-sources"><div class="nutri-sources-lbl">SOURCES AUTORISÉES</div><div class="nutri-sources-val">Blanc poulet · Blanc d'œuf · Cabillaud · Crevettes · Thon nat. · Cottage 0%</div></div>`;
+  html+=`</div>`;
+
+  // Tasks
+  html+=`<div class="label" style="padding-left:4px;margin-bottom:10px">OBJECTIFS — ENTRE TES VRAIES VALEURS</div>`;
+  tasks.forEach(task=>{
+    const val=getVal(d,task.id);
+    const prog=getProgress(task,val);
+    const col=getColor(prog);
+    const pct=Math.min(100,prog*100);
+    const missedG=Math.round((1-prog)*(task.kcal||0)*FAT);
+    const earnedGT=Math.round(prog*(task.kcal||0)*FAT);
+    const isFullT=prog>=1;
+    const cardClass=isFullT?"full":prog>0?"partial":"";
+
+    let displayVal="";
+    if(task.type==="steps")displayVal=`${(parseFloat(val)||0).toLocaleString("fr-FR")} / ${task.target.toLocaleString("fr-FR")}`;
+    else if(task.type==="bool")displayVal=val>=1?"✓ FAIT":"—";
+    else displayVal=`${val||0} / ${task.target} ${task.unit}`;
+
+    html+=`<div class="task-card ${cardClass}" id="tc_${d}_${task.id}">
+      <div class="task-header">
+        <span class="task-emoji">${task.icon}</span>
+        <div class="task-label-wrap">
+          <div class="task-label-row">
+            <span class="task-name" style="color:${col}">${task.label}</span>
+            <span class="task-val" style="color:${col}">${displayVal}</span>
+          </div>
+          ${task.note?`<div class="task-note">${task.note}</div>`:""}
+        </div>
+      </div>`;
+
+    if(task.type!=="bool")html+=`<div class="task-progress-track"><div class="task-progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${col}88,${col})"></div></div>`;
+
+    // Input
+    if(task.type==="steps"){
+      html+=`<input class="num-input" type="number" inputmode="numeric" placeholder="0" value="${val||""}" style="border-color:${val>0?col+"60":"#2a2a2a"};color:${col}" data-day="${d}" data-task="${task.id}" onchange="handleVal(${d},'${task.id}',this.value)" oninput="handleVal(${d},'${task.id}',this.value)">
+      <div class="quick-btns">
+        ${[5000,8000,10000,12000,15000].map(n=>`<button class="qbtn" style="${(val||0)==n?`background:${col}30;border-color:${col};color:${col}`:""}" onclick="handleVal(${d},'${task.id}',${n})">${n/1000}k</button>`).join("")}
+      </div>`;
+    } else if(task.type==="slider"||task.type==="pct"){
+      const step=task.type==="pct"?5:5;
+      html+=`<div class="slider-wrap">
+        <div class="track-fill" style="width:${pct}%;background:linear-gradient(90deg,${col}60,${col}90)"></div>
+        <input type="range" min="0" max="${task.target}" step="${step}" value="${val||0}" oninput="handleVal(${d},'${task.id}',this.value)">
+      </div>`;
+      if(task.type==="pct"){
+        html+=`<div class="quick-btns">${[25,50,75,100].map(n=>`<button class="qbtn" style="${(val||0)>=n?`background:${col}25;border-color:${col};color:${col}`:""}" onclick="handleVal(${d},'${task.id}',${n})">${n}%</button>`).join("")}</div>`;
+      } else if(task.id==="incline"){
+        const opts=task.target===45?[15,20,30,45]:[10,15,20];
+        html+=`<div class="quick-btns">${opts.map(n=>`<button class="qbtn" style="${(val||0)>=n?`background:${col}25;border-color:${col};color:${col}`:""}" onclick="handleVal(${d},'${task.id}',${n})">${n}m</button>`).join("")}</div>`;
+      }
+    } else if(task.type==="water"){
+      html+=`<div class="slider-wrap">
+        <div class="track-fill" style="width:${pct}%;background:linear-gradient(90deg,${col}60,${col}90)"></div>
+        <input type="range" min="0" max="4" step="0.5" value="${val||0}" oninput="handleVal(${d},'${task.id}',this.value)">
+      </div>
+      <div class="quick-btns">${[1,2,3,4].map(n=>`<button class="qbtn" style="${(val||0)>=n?`background:${col}25;border-color:${col};color:${col}`:""}" onclick="handleVal(${d},'${task.id}',${n})">${n}L</button>`).join("")}</div>`;
+    } else if(task.type==="bool"){
+      html+=`<button class="bool-btn ${val>=1?"done":""}" onclick="handleVal(${d},'${task.id}',${val>=1?0:1})">${val>=1?"✓ PRIS":"MARQUER COMME PRIS"}</button>`;
+    }
+
+    if(task.kcal>0){
+      html+=`<div class="task-feedback ${isFullT?"good":"bad"}">
+        <span class="tf-label" style="color:${isFullT?"#22c55e80":"#ef444470"}">${isFullT?"Brûlé":"Non brûlé"}</span>
+        <span class="tf-val" style="color:${isFullT?"#22c55e":"#ef4444"}">${isFullT?"+"+earnedGT+"g gras éliminé ✓":"+"+missedG+"g gras conservé"}</span>
+      </div>`;
+    }
+    html+=`</div>`;
+  });
+
+  // Summary
+  html+=`<div class="card" style="margin-top:4px">
+    <div class="label">BILAN JOURNALIER</div>
+    <div class="day-summary">
+      <div><div class="ds-val" style="color:#22c55e">${earnedG}g</div><div class="ds-lbl" style="color:#22c55e60">gras brûlé</div></div>
+      <div><div class="ds-val" style="color:${fatG>0?"#ef4444":"#333"}">${fatG}g</div><div class="ds-lbl" style="color:${fatG>0?"#ef444460":"#333"}">${fatG>0?"gras conservé":"aucune perte manquée ✓"}</div></div>
+    </div>
+  </div>`;
+
+  // Penalty / Perfect
+  if(fatG>0){
+    const tags=tasks.filter(t=>t.kcal>0).map(t=>{
+      const p=getProgress(t,getVal(d,t.id));
+      if(p>=1)return"";
+      const mg=Math.round((1-p)*t.kcal*FAT);
+      return`<span class="penalty-tag">${t.icon} ${Math.round(p*100)}% → +${mg}g</span>`;
+    }).join("");
+    html+=`<div class="penalty">
+      <div class="penalty-title">⚠️ GRAISSE NON BRÛLÉE</div>
+      <div class="penalty-main"><span class="penalty-g">${fatG}g</span><span class="penalty-sub">de gras conservé</span></div>
+      <div class="penalty-tags">${tags}</div>
+      <div class="penalty-note">${Math.round(uncheckedKcal)} kcal non dépensées · Améliore tes valeurs pour réduire ce chiffre</div>
+    </div>`;
+  }
+  if(comp>=100)html+=`<div class="perfect"><div class="perfect-icon">🔥</div><div class="perfect-title">JOURNÉE PARFAITE</div><div class="perfect-sub">+${earnedG}g de gras éliminé aujourd'hui</div></div>`;
+
+  return html;
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+function renderCalendar(){
+  let html=`<div class="cycle-summary">`;
+  [{c:1,s:0},{c:2,s:39},{c:3,s:78}].forEach(cy=>{
+    const days=Array.from({length:39},(_,i)=>cy.s+i);
+    const done=days.filter(i=>i<=todayIdx);
+    const avg=done.length?Math.round(done.reduce((s,i)=>s+getCompletion(i),0)/done.length):0;
+    html+=`<div class="cycle-card"><div class="cycle-num">C${cy.c}</div><div class="cycle-stat">${done.length?avg+"%":"—"}</div><div class="cycle-lbl">moy. complétion</div></div>`;
+  });
+  html+=`</div>`;
+
+  for(let i=0;i<117;i++){
+    const date=addDays(i);
+    const phase=getPhase(i);
+    const isPSMF=phase&&phase.phase==="PSMF";
+    const comp=getCompletion(i);
+    const weight=W(i);
+    const milestone=MILESTONES.find(m=>m.d===i);
+    const isToday=i===todayIdx;
+    const isExp=expandedDay===i;
+    const fatG=Math.round(getUncheckedKcal(i)*FAT);
+    const dow=addDays(i).getDay();
+    const sess=SESSIONS[dow];
+    const ringColor=comp>=100?"#22c55e":comp>=70?"#84cc16":comp>0?"#f59e0b":"#333";
+    const dashArr=(comp/100)*81.7;
+
+    if(milestone)html+=`<div class="milestone-row"><span class="milestone-row-icon">${milestone.icon}</span><span class="milestone-row-label">${milestone.label} — ${milestone.w} KG</span></div>`;
+
+    html+=`<div class="day-row ${isToday?"today":""}" onclick="toggleExpand(${i})">
+      <svg width="34" height="34" viewBox="0 0 32 32" style="flex-shrink:0">
+        <circle cx="16" cy="16" r="13" fill="none" stroke="#1a1a1a" stroke-width="2.5"/>
+        <circle cx="16" cy="16" r="13" fill="none" stroke="${ringColor}" stroke-width="2.5" stroke-dasharray="${dashArr} 81.7" class="ring"/>
+        <text x="16" y="20" text-anchor="middle" fill="${comp>0?ringColor:"#333"}" style="font-size:8px;font-family:Inter,sans-serif;font-weight:600">${comp}%</text>
+      </svg>
+      <div class="day-info">
+        <div class="day-title-row">
+          <span class="day-title ${isToday?"today-color":""}">J${i+1} · ${fmtDate(date)}</span>
+          ${isToday?'<span class="day-today-badge">AUJOURD\'HUI</span>':""}
+        </div>
+        <div class="day-sub">
+          <span style="color:${isPSMF?"#ef444470":"#22c55e70"}">${phase?phase.phase:""} C${phase?phase.cycle:""}</span>
+          <span>·</span><span>${weight.toFixed(1)} kg</span>
+          ${sess?`<span style="color:${sess.color}70">· ${sess.label}</span>`:""}
+        </div>
+      </div>
+      ${fatG>0&&i<=todayIdx?`<div class="day-fat-badge"><div class="day-fat-val">+${fatG}g</div><div class="day-fat-lbl">gras</div></div>`:""}
+      ${comp>=100&&i<=todayIdx?`<span class="day-perfect-mark">✦</span>`:""}
+    </div>`;
+
+    if(isExp)html+=`<div class="day-expanded">${renderDay(i)}</div>`;
+  }
+  return html;
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function renderStats(){
+  const totalFatG=Array.from({length:117},(_,i)=>getUncheckedKcal(i)).reduce((a,b)=>a+b,0);
+  const totalFatKg=(totalFatG*FAT/1000).toFixed(1);
+  const comps=Array.from({length:todayIdx+1},(_,i)=>getCompletion(i));
+  const avg=comps.length?Math.round(comps.reduce((a,b)=>a+b,0)/comps.length):0;
+  const cw=W(todayIdx);
+  const cbf=getBF(todayIdx).toFixed(1);
+  const lost=(98-cw).toFixed(1);
+
+  let html=`<div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">MOY. COMPLÉTION</div><div class="stat-val" style="color:#22c55e">${avg}%</div><div class="stat-sub">sur tous les jours</div></div>
+    <div class="stat-card"><div class="stat-label">GRAS CONSERVÉ</div><div class="stat-val" style="color:#ef4444">${totalFatKg}kg</div><div class="stat-sub">non brûlé total</div></div>
+    <div class="stat-card"><div class="stat-label">POIDS OBJECTIF</div><div class="stat-val" style="color:#f59e0b">${cw.toFixed(1)}kg</div><div class="stat-sub">−${lost} kg</div></div>
+    <div class="stat-card"><div class="stat-label">BODYFAT EST.</div><div class="stat-val" style="color:#8b5cf6">${cbf}%</div><div class="stat-sub">objectif du jour</div></div>
+  </div>`;
+
+  html+=`<div class="label" style="margin-bottom:10px">MILESTONES</div>`;
+  MILESTONES.forEach(m=>{
+    const reached=todayIdx>=m.d;
+    const mDate=addDays(m.d);
+    html+=`<div class="ms-row ${reached?"reached":""}">
+      <span class="ms-icon" style="opacity:${reached?1:0.3}">${m.icon}</span>
+      <div style="flex:1">
+        <div class="ms-name ${reached?"reached-color":"not-reached"}">${m.label}</div>
+        <div class="ms-date">${fmtDate(mDate).toUpperCase()} · ${m.w} KG · ${m.bf}% BF</div>
+      </div>
+      ${reached?`<span class="ms-check">✓</span>`:""}
+    </div>`;
+  });
+
+  html+=`<div class="label" style="margin-top:16px;margin-bottom:10px">PLANNING CYCLES</div>`;
+  [{l:"CYCLE 1 — PSMF",d:"16 Mars → 19 Avr",n:"35j",c:"#ef4444"},{l:"CYCLE 1 — REFEED",d:"20 → 23 Avr",n:"4j",c:"#22c55e"},{l:"CYCLE 2 — PSMF",d:"24 Avr → 28 Mai",n:"35j",c:"#ef4444"},{l:"CYCLE 2 — REFEED",d:"29 Mai → 1 Juin",n:"4j",c:"#22c55e"},{l:"CYCLE 3 — PSMF",d:"2 Juin → 6 Juil",n:"35j",c:"#ef4444"},{l:"CYCLE 3 — REFEED",d:"7 → 10 Juil",n:"4j",c:"#22c55e"}].forEach(r=>{
+    html+=`<div class="plan-row" style="border:1px solid ${r.c}15">
+      <div class="plan-bar" style="background:${r.c}"></div>
+      <div style="flex:1"><div class="plan-name" style="color:${r.c}">${r.l}</div><div class="plan-dates">${r.d}</div></div>
+      <div class="plan-days">${r.n}</div>
+    </div>`;
+  });
+
+  html+=`<div class="label" style="margin-top:16px;margin-bottom:10px">SUPPLÉMENTS QUOTIDIENS</div>
+  <div class="supps-grid">
+    ${[{n:"Créatine",d:"5g — matin",c:"#3b82f6"},{n:"Électrolytes",d:"matin + soir",c:"#f59e0b"},{n:"Multivitamines",d:"midi",c:"#22c55e"},{n:"Caféine",d:"100–200mg pré-entr.",c:"#ef4444"},{n:"Oméga-3",d:"2–3g — soir",c:"#8b5cf6"}].map(s=>`<div class="supp-card" style="border:1px solid ${s.c}20"><div class="supp-name" style="color:${s.c}">${s.n}</div><div class="supp-dose">${s.d}</div></div>`).join("")}
+  </div>`;
+
+  return html;
+}
+
+// ============================================================
+// EVENTS
+// ============================================================
+function bindEvents(){}
+
+function handleVal(d,id,v){
+  setVal(d,id,parseFloat(v)||0);
+}
+
+function toggleExpand(i){
+  expandedDay=expandedDay===i?null:i;
+  renderView();
+  // scroll to expanded
+  setTimeout(()=>{
+    const el=document.querySelector(".day-expanded");
+    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+  },50);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  load();
+  const now=new Date();
+  todayIdx=Math.max(0,Math.min(116,Math.floor((now-START)/86400000)));
+
+  // Update header
+  document.getElementById("days-left").textContent=116-todayIdx;
+  const prog=Math.round((todayIdx/116)*100);
+  document.getElementById("progress-fill").style.width=prog+"%";
+  document.getElementById("progress-center").textContent=prog+"% · "+W(todayIdx).toFixed(1)+" KG";
+  document.getElementById("bb-main-btn").textContent="JOUR "+(todayIdx+1)+" · "+fmtDate(addDays(todayIdx)).toUpperCase();
+
+  renderView();
+}
+
+init();
+</script>
+</body>
+</html>
